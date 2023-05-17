@@ -1,11 +1,8 @@
-import "./globals.css";
-import { Inter } from "next/font/google";
 import { api } from "./api";
-import { HeaderNavigation } from "./ui/headerNavigation";
+import { quickSandFont } from "./fonts";
+import "./globals.css";
 import { Footer } from "./ui/footer";
-import { Sidebar } from "./ui/sidebar";
-
-const inter = Inter({ subsets: ["latin"] });
+import { HeaderNavigation } from "./ui/headerNavigation";
 
 export const metadata = {
   title: "Create Next App",
@@ -22,13 +19,10 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <main>
+      <body className={quickSandFont.className}>
+        <main className="max-w-screen-lg m-auto">
           <HeaderNavigation />
-          <div>
-            <Sidebar />
-            {children}
-          </div>
+          <div className="p-8">{children}</div>
           <Footer />
         </main>
       </body>

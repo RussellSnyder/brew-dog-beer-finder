@@ -5,12 +5,15 @@ import { PageTitle } from "../ui/pageTitle";
 export default async function AllBeerPage() {
   const beers = await api.getAllBeerData();
 
+  if (!beers) {
+    return null;
+  }
   return (
     <div>
       <PageTitle>All Beers</PageTitle>
-      <div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {beers.map((beer) => (
-          <BeerPreview key={beer.name} beer={beer} />
+          <BeerPreview key={beer.id} beer={beer} />
         ))}
       </div>
     </div>
