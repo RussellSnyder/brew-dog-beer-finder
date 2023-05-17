@@ -1,6 +1,6 @@
 import { api } from "../api";
 import { BeerPreview } from "../ui/beerPreview";
-import { PageTitle } from "../ui/pageTitle";
+import { PageTitle } from "../ui/typography";
 
 export default async function AllBeerPage() {
   const beers = await api.getAllBeerData();
