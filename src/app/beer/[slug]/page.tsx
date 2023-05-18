@@ -1,6 +1,9 @@
+import Image from "next/image";
 import { api } from "@/app/api";
 import { PageSubtitle, PageTitle } from "@/app/ui/typography";
-import { BeerInformation } from "@/types";
+import beerFallback from "../../../assets/beer-fallback.jpeg";
+const IMAGE_SIZE_LARGE = 150;
+const IMAGE_SIZE_SMALL = 75;
 
 interface Props {
   params: {
@@ -37,10 +40,12 @@ export default async function BeerPage({ params: { slug } }: Props) {
           <div className="text-center md:text-left mb-4">
             <PageTitle>{beer.name}</PageTitle>
             <div className="md:hidden my-2">
-              <img
-                src={beer.image_url}
+              <Image
+                className="block m-auto"
+                width={IMAGE_SIZE_SMALL}
+                height={IMAGE_SIZE_SMALL}
+                src={beer.image_url || beerFallback}
                 alt={`can or keg of ${beer.name}`}
-                className="w-20 h-auto m-auto"
               />
             </div>
             <PageSubtitle>&quot;{beer.tagline}&quot;</PageSubtitle>
@@ -107,10 +112,12 @@ export default async function BeerPage({ params: { slug } }: Props) {
           </div>
         </div>
         <div className="hidden md:flex md:flex-5">
-          <img
-            src={beer.image_url}
+          <Image
+            className="block m-auto"
+            width={IMAGE_SIZE_LARGE}
+            height={IMAGE_SIZE_LARGE}
+            src={beer.image_url || beerFallback}
             alt={`can or keg of ${beer.name}`}
-            className="w-36 h-auto"
           />
         </div>
       </div>

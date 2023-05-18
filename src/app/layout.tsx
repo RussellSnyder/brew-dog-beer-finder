@@ -23,8 +23,8 @@ export default async function RootLayout({
         <main className="max-w-screen-lg m-auto">
           <HeaderNavigation />
           <div className="p-8">{children}</div>
-          <Footer />
         </main>
+        <Footer />
       </body>
     </html>
   );
