@@ -1,12 +1,25 @@
 import Link from "next/link";
 import { PropsWithChildren } from "react";
 
-interface Props extends PropsWithChildren {
+interface LinkButtonProps extends PropsWithChildren {
   href: string;
 }
 
-export const Button = ({ children, href }: Props) => (
+export const LinkButton = ({ children, href }: LinkButtonProps) => (
   <Link href={href} className="p-4 bg-cyan-600 rounded font-bold text-white">
     {children}
   </Link>
+);
+
+interface ButtonProps extends PropsWithChildren {
+  onClick: () => void;
+}
+
+export const Button = ({ children, onClick }: ButtonProps) => (
+  <button
+    onClick={onClick}
+    className="p-4 bg-cyan-600 rounded font-bold text-white"
+  >
+    {children}
+  </button>
 );

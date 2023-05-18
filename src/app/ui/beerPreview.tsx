@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { BeerInformation } from "../../types";
-import { Button } from "./button";
+import { LinkButton } from "./button";
 import beerFallback from "../../assets/beer-fallback.jpeg";
 const IMAGE_SIZE = 75;
 
@@ -25,7 +25,7 @@ export const BeerPreview = ({ beer }: Props) => {
         </div>
       </div>
       <div className="flex justify-center">
-        <Button href={`/beer/${beer.slug}`}>More details</Button>
+        <LinkButton href={`/beer/${beer.slug}`}>More details</LinkButton>
       </div>
     </div>
   );

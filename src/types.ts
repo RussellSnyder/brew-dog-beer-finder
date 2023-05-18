@@ -6,7 +6,7 @@ export interface ValueUnit {
 export interface BeerInformation {
   id: number;
   name: string;
-  slug: string; // this is added by us
+  slug?: string; // this is added by us
   tagline: string;
   first_brewed: string;
   description: string;

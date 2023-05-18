@@ -2,7 +2,7 @@ import { PropsWithChildren } from "react";
 import { itimFont } from "../fonts";
 
 export const PageTitle = ({ children }: PropsWithChildren) => (
-  <h1 className={`text-3xl ${itimFont.className}`}>{children}</h1>
+  <h1 className={`text-3xl mb-4 ${itimFont.className}`}>{children}</h1>
 );
 
 export const PageSubtitle = ({ children }: PropsWithChildren) => (

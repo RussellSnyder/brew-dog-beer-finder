@@ -34,7 +34,7 @@ export default async function BeerPage({ params: { slug } }: Props) {
   }
 
   return (
-    <div>
+    <main>
       <div className="flex justify-between">
         <div className="md:flex-1 mr-12">
           <div className="text-center md:text-left mb-4">
@@ -141,6 +141,6 @@ export default async function BeerPage({ params: { slug } }: Props) {
           <strong>contributed by</strong>: {beer.contributed_by}
         </p>
       </div>
-    </div>
+    </main>
   );
 }

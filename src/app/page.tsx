@@ -1,7 +1,12 @@
+import { PairingFinder } from "./pairing-finder/pairingFinder";
+import { PageTitle } from "./ui/typography";
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      Pairings here
+    <main className="">
+      <PageTitle>Beer Pairings</PageTitle>
+
+      <PairingFinder />
     </main>
   );
 }
