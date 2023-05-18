@@ -15,7 +15,7 @@ const navLinks: NavLink[] = [
   },
   {
     name: "All Beer",
-    href: "all-beer",
+    href: "/all-beer",
   },
 ];
 
@@ -34,7 +34,8 @@ export const HeaderNavigation = () => {
         </div>
         <div className="flex-10">
           {navLinks.map((link) => {
-            const isActive = pathname?.includes(link.href);
+            console.log({ pathname });
+            const isActive = pathname === link.href;
 
             return (
               <Link
