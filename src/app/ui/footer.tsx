@@ -1,5 +1,5 @@
 export const Footer = () => (
-  <div className="bg-cyan-600 p-4 border-t-4 border-yellow-600 text-center">
+  <div className="bg-cyan-600 p-4 border-t-4 border-yellow-600 text-center text-white">
     <strong>
       Coded By{" "}
       <a

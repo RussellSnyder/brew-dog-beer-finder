@@ -3,19 +3,25 @@
 import { BASE_API_URL } from "@/constants";
 import { BeerInformation } from "@/types";
 import { useCallback, useEffect, useState } from "react";
-import { LinkButton } from "../ui/button";
-import Link from "next/link";
 import slugify from "slugify";
+import { useDebounce } from "../hooks/useDebounce";
+import useFocus from "../hooks/useFocus";
+import { Button } from "../ui/button";
+import { Card } from "../ui/card";
+import Image from "next/image";
+import beerFallback from "../../assets/beer-fallback.jpeg";
+import { truncate } from "lodash";
+const IMAGE_SIZE = 70;
 
 interface EmptyStateProps {
   searchString: string;
   handleReset: () => void;
 }
-const EmptyState = ({ searchString }: EmptyStateProps) => (
+const EmptyState = ({ searchString, handleReset }: EmptyStateProps) => (
   <div>
     <h3>No Beers for search &quot;{searchString}&quot;</h3>
 
-    <LinkButton href="">Reset</LinkButton>
+    <Button onClick={handleReset}>Reset</Button>
   </div>
 );
 
@@ -24,8 +30,14 @@ interface BeerPairingProps {
   searchString: string;
 }
 
+enum ScreenState {
+  Initial = "Initial",
+  Loading = "Loading",
+  Data = "Data",
+  NoResults = "No Results",
+}
+
 const BeerPairing = ({ beer, searchString }: BeerPairingProps) => {
-  console.log(searchString);
   const pairings = beer.food_pairing.filter((food) =>
     food.includes(searchString)
   );
@@ -36,15 +48,36 @@ const BeerPairing = ({ beer, searchString }: BeerPairingProps) => {
     return pairing.replaceAll(searchString, highlight);
   });
   return (
-    <Link href={`/beer/${slugify(beer.name, { lower: true })}`}>
-      <h4 className="font-bold">{beer.name}</h4>
-      {pairingsWithHighlightedText.map((pairingText) => (
-        <p
-          key={pairingText}
-          dangerouslySetInnerHTML={{ __html: pairingText }}
-        />
-      ))}
-    </Link>
+    <Card
+      size="sm"
+      title={beer.name}
+      cta={{
+        href: `/beer/${slugify(beer.name, { lower: true })}`,
+        label: "Check it out",
+      }}
+    >
+      <div className="">
+        {pairingsWithHighlightedText.length ? (
+          <>
+            <h4 className="font-bold">Pairs well with:</h4>
+            <ul className="list-disc pl-8">
+              {pairingsWithHighlightedText.map((pairingText) => (
+                <li
+                  key={pairingText}
+                  dangerouslySetInnerHTML={{ __html: pairingText }}
+                />
+              ))}
+            </ul>
+          </>
+        ) : null}
+        <h4 className="font-bold mt-4">Description:</h4>
+        <p className="">
+          {truncate(beer.description, {
+            length: 80,
+          })}
+        </p>
+      </div>
+    </Card>
   );
 };
 
@@ -62,20 +95,35 @@ const BeerPairings = ({ beerPairings, searchString }: BeerPairingsProps) => (
 );
 
 export const PairingFinder = () => {
+  const [inputRef, setInputFocus] = useFocus<HTMLInputElement>();
+  const [screenState, setScreenState] = useState<ScreenState>(
+    ScreenState.Initial
+  );
+
   const [beerPairings, setBeerPairings] = useState<BeerInformation[]>([]);
   const [searchString, setSearchString] = useState<string>("");
 
+  const fetchBeerPairings = useCallback(async () => {
+    if (!searchString.length) return;
+    // The api states that spaces should be turned into underscores
+    // https://punkapi.com/documentation/v2
+    const foodQuery = searchString.replaceAll(" ", "_");
+
+    const res = await fetch(`${BASE_API_URL}/beers?food=${foodQuery}`);
+
+    const beers = await res.json();
+
+    setBeerPairings(beers);
+
+    setScreenState(beers.length ? ScreenState.Data : ScreenState.NoResults);
+  }, [searchString]);
+
+  const debouncedFetchBeerPairings = useDebounce(fetchBeerPairings, 500);
+
   useEffect(() => {
-    async function fetchBeers() {
-      // The api states that spaces should be turned into underscores
-      const foodQuery = searchString.replaceAll(" ", "_");
-
-      const res = await fetch(`${BASE_API_URL}/beers?food=${foodQuery}`);
-
-      const beers = await res.json();
-      setBeerPairings(beers);
+    if (!searchString.length) {
+      setScreenState(ScreenState.Initial);
     }
-    fetchBeers();
   }, [searchString]);
 
   const handleSearchStringChange = useCallback(
@@ -83,33 +131,42 @@ export const PairingFinder = () => {
       const newValue = event.currentTarget.value;
 
       setSearchString(newValue);
-      setBeerPairings([]);
+      setScreenState(ScreenState.Loading);
+
+      debouncedFetchBeerPairings();
     },
-    []
+    [debouncedFetchBeerPairings]
   );
 
   const handleReset = useCallback(() => {
     setSearchString("");
-  }, []);
+    setBeerPairings([]);
+    setInputFocus();
+  }, [setInputFocus]);
 
   return (
     <div>
       <div>
         <input
+          ref={inputRef}
           className="mb-6 mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-cyan-600 focus:ring-cyan-600 block rounded-md sm:text-sm focus:ring-1"
-          value={searchString}
           onChange={handleSearchStringChange}
+          value={searchString}
           placeholder="example: chicken"
         />
 
         <div>
-          {searchString && beerPairings ? (
+          {screenState === ScreenState.Loading ? <p>Loading</p> : null}
+          {screenState === ScreenState.Initial ? (
+            <p>What are you eating tonight?</p>
+          ) : null}
+          {screenState === ScreenState.Data ? (
             <BeerPairings
               searchString={searchString}
               beerPairings={beerPairings}
             />
           ) : null}
-          {searchString && !beerPairings ? (
+          {screenState === ScreenState.NoResults ? (
             <EmptyState searchString={searchString} handleReset={handleReset} />
           ) : null}
         </div>

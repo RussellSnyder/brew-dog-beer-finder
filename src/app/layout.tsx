@@ -22,7 +22,7 @@ export default async function RootLayout({
       <body className={quickSandFont.className}>
         <main className="max-w-screen-lg m-auto min-h-screen flex flex-col justify-between">
           <HeaderNavigation />
-          <div className="p-8">{children}</div>
+          <div className="p-8 mb-auto">{children}</div>
           <Footer />
         </main>
       </body>
