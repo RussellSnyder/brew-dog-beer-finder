@@ -1,24 +1,15 @@
 import { cache } from "react";
 import "server-only";
 
-import { BeerInformation } from "../../types";
-import { BASE_API_URL } from "../../constants";
 import slugify from "slugify";
-
-const fetchPageOfBeerData = async (
-  pageNumber = 1
-): Promise<BeerInformation[]> => {
-  // 80 beers at a timie is the maximum that can be requested
-  const res = await fetch(
-    `${BASE_API_URL}/beers?page=${pageNumber}&per_page=80`
-  );
-  const json = await res.json();
-
-  return json;
-};
+import { fetchPageOfBeerData } from "./api";
 
 const preloadBeerData = () => {
   void fetchPageOfBeerData();
+};
+
+const getFirstPageOfBeerData = async () => {
+  return fetchPageOfBeerData();
 };
 
 const getAllBeerData = cache(async () => {
@@ -31,8 +22,6 @@ const getAllBeerData = cache(async () => {
     const page4 = await fetchPageOfBeerData(4);
 
     const beerData = await Promise.all([page1, page2, page3, page4]);
-
-    console.log(`${beerData.flat().length} fetched`);
 
     return beerData.flat().map((beer) => ({
       ...beer,
@@ -58,4 +47,5 @@ export const api = {
   getAllBeerData,
   preloadData,
   getBeerBySlug,
+  getFirstPageOfBeerData,
 };

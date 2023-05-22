@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { api } from "@/app/api";
+import { api } from "@/app/api/api.server";
 import { PageSubtitle, PageTitle } from "@/app/ui/typography";
 import beerFallback from "../../../assets/beer-fallback.jpeg";
 const IMAGE_SIZE_LARGE = 150;

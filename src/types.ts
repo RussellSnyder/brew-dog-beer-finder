@@ -48,3 +48,10 @@ export interface BeerInformation {
   brewers_tips: string;
   contributed_by: string;
 }
+
+export enum ViewDataState {
+  Initial = "Initial",
+  Loading = "Loading",
+  Data = "Data",
+  NoResults = "No Results",
+}

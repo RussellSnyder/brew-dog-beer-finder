@@ -1,4 +1,4 @@
-import { api } from "./api";
+import { api } from "./api/api.server";
 import { quickSandFont } from "./fonts";
 import "./globals.css";
 import { Footer } from "./ui/footer";

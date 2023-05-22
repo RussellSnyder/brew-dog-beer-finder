@@ -1,17 +1,16 @@
 "use client";
 
 import { BASE_API_URL } from "@/constants";
-import { BeerInformation } from "@/types";
+import { BeerInformation, ViewDataState } from "@/types";
+import { truncate } from "lodash";
 import { useCallback, useEffect, useState } from "react";
 import slugify from "slugify";
 import { useDebounce } from "../hooks/useDebounce";
 import useFocus from "../hooks/useFocus";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
-import Image from "next/image";
-import beerFallback from "../../assets/beer-fallback.jpeg";
-import { truncate } from "lodash";
-const IMAGE_SIZE = 70;
+import { useViewDataState } from "../hooks/useViewDataState";
+import { fetchFoodsForBeer } from "../api/api";
 
 interface EmptyStateProps {
   searchString: string;
@@ -19,7 +18,9 @@ interface EmptyStateProps {
 }
 const EmptyState = ({ searchString, handleReset }: EmptyStateProps) => (
   <div>
-    <h3>No Beers for search &quot;{searchString}&quot;</h3>
+    <h3 className="text-xl mb-4">
+      No Beers for search &quot;{searchString}&quot;
+    </h3>
 
     <Button onClick={handleReset}>Reset</Button>
   </div>
@@ -28,13 +29,6 @@ const EmptyState = ({ searchString, handleReset }: EmptyStateProps) => (
 interface BeerPairingProps {
   beer: BeerInformation;
   searchString: string;
-}
-
-enum ScreenState {
-  Initial = "Initial",
-  Loading = "Loading",
-  Data = "Data",
-  NoResults = "No Results",
 }
 
 const BeerPairing = ({ beer, searchString }: BeerPairingProps) => {
@@ -96,46 +90,43 @@ const BeerPairings = ({ beerPairings, searchString }: BeerPairingsProps) => (
 
 export const PairingFinder = () => {
   const [inputRef, setInputFocus] = useFocus<HTMLInputElement>();
-  const [screenState, setScreenState] = useState<ScreenState>(
-    ScreenState.Initial
-  );
+  const [viewDataState, setViewDataState] = useViewDataState();
 
   const [beerPairings, setBeerPairings] = useState<BeerInformation[]>([]);
   const [searchString, setSearchString] = useState<string>("");
 
   const fetchBeerPairings = useCallback(async () => {
     if (!searchString.length) return;
+
     // The api states that spaces should be turned into underscores
     // https://punkapi.com/documentation/v2
-    const foodQuery = searchString.replaceAll(" ", "_");
-
-    const res = await fetch(`${BASE_API_URL}/beers?food=${foodQuery}`);
-
-    const beers = await res.json();
+    const beers = await fetchFoodsForBeer(searchString.replaceAll(" ", "_"));
 
     setBeerPairings(beers);
 
-    setScreenState(beers.length ? ScreenState.Data : ScreenState.NoResults);
-  }, [searchString]);
+    setViewDataState(
+      beers.length ? ViewDataState.Data : ViewDataState.NoResults
+    );
+  }, [searchString, setViewDataState]);
 
   const debouncedFetchBeerPairings = useDebounce(fetchBeerPairings, 500);
 
   useEffect(() => {
     if (!searchString.length) {
-      setScreenState(ScreenState.Initial);
+      setViewDataState(ViewDataState.Initial);
     }
-  }, [searchString]);
+  }, [searchString, setViewDataState]);
 
   const handleSearchStringChange = useCallback(
     (event: React.FormEvent<HTMLInputElement>) => {
       const newValue = event.currentTarget.value;
 
       setSearchString(newValue);
-      setScreenState(ScreenState.Loading);
+      setViewDataState(ViewDataState.Loading);
 
       debouncedFetchBeerPairings();
     },
-    [debouncedFetchBeerPairings]
+    [debouncedFetchBeerPairings, setViewDataState]
   );
 
   const handleReset = useCallback(() => {
@@ -156,17 +147,17 @@ export const PairingFinder = () => {
         />
 
         <div>
-          {screenState === ScreenState.Loading ? <p>Loading</p> : null}
-          {screenState === ScreenState.Initial ? (
+          {viewDataState === ViewDataState.Loading ? <p>Loading</p> : null}
+          {viewDataState === ViewDataState.Initial ? (
             <p>What are you eating tonight?</p>
           ) : null}
-          {screenState === ScreenState.Data ? (
+          {viewDataState === ViewDataState.Data ? (
             <BeerPairings
               searchString={searchString}
               beerPairings={beerPairings}
             />
           ) : null}
-          {screenState === ScreenState.NoResults ? (
+          {viewDataState === ViewDataState.NoResults ? (
             <EmptyState searchString={searchString} handleReset={handleReset} />
           ) : null}
         </div>

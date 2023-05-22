@@ -22,7 +22,7 @@ export const Card = ({ title, cta, children, size = "lg" }: Props) => {
           size === "lg" ? "h-96" : "h-52"
         } content-middle`}
       >
-        <h2 className="text-lg font-bold mb-2 text-center h-2">{title}</h2>
+        <h2 className="text-lg font-bold mb-6 text-center h-2">{title}</h2>
         <div className="relative m-auto">{children}</div>
       </div>
       <div className="flex justify-center">

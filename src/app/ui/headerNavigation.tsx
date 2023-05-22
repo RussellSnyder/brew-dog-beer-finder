@@ -34,7 +34,6 @@ export const HeaderNavigation = () => {
         </div>
         <div className="flex-10">
           {navLinks.map((link) => {
-            console.log({ pathname });
             const isActive = pathname === link.href;
 
             return (
