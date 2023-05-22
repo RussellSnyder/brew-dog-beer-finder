@@ -66,12 +66,14 @@ const BeerPairing = ({ beer, searchString }: BeerPairingProps) => {
             </ul>
           </>
         ) : null}
-        <h4 className="font-bold mt-4">Description:</h4>
-        <p className="">
+        <div className="h-90 min-h-full mt-4">
+          <h4 className="font-bold"></h4>
+          <span className="font-bold">Description: </span>
           {truncate(beer.description, {
-            length: 80,
+            length: 75,
+            separator: " ",
           })}
-        </p>
+        </div>
       </div>
     </Card>
   );
