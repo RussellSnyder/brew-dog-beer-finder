@@ -1,4 +1,4 @@
-import { PairingFinder } from "./pairing-finder/pairingFinder";
+import { PairingFinder } from "./pairingFinder/pairingFinder";
 import { PageTitle } from "./ui/typography";
 
 export default function Home() {

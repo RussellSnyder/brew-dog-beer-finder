@@ -1,8 +1,5 @@
-import Image from "next/image";
-import { BeerInformation } from "../../types";
-import { LinkButton } from "./button";
-import beerFallback from "../../assets/beer-fallback.jpeg";
 import { PropsWithChildren } from "react";
+import { LinkButton } from "./button";
 const IMAGE_SIZE = 75;
 
 interface Props extends PropsWithChildren {
@@ -16,7 +13,7 @@ interface Props extends PropsWithChildren {
 
 export const Card = ({ title, cta, children, size = "lg" }: Props) => {
   return (
-    <div className="border-2 p-4">
+    <div className="border-2 p-4" data-cy="card">
       <div
         className={`flex flex-col ${
           size === "lg" ? "h-96" : "h-52"

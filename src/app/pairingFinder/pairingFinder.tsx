@@ -17,12 +17,14 @@ interface EmptyStateProps {
   handleReset: () => void;
 }
 const EmptyState = ({ searchString, handleReset }: EmptyStateProps) => (
-  <div>
+  <div data-cy="empty-state">
     <h3 className="text-xl mb-4">
       No Beers for search &quot;{searchString}&quot;
     </h3>
 
-    <Button onClick={handleReset}>Reset</Button>
+    <Button onClick={handleReset} data-cy="reset-button">
+      Reset
+    </Button>
   </div>
 );
 
@@ -46,7 +48,7 @@ const BeerPairing = ({ beer, searchString }: BeerPairingProps) => {
       size="sm"
       title={beer.name}
       cta={{
-        href: `/beer/${slugify(beer.name, { lower: true })}`,
+        href: `/beer/${slugify(beer.name, { lower: true, strict: true })}`,
         label: "Check it out",
       }}
     >
@@ -81,7 +83,10 @@ interface BeerPairingsProps {
 }
 
 const BeerPairings = ({ beerPairings, searchString }: BeerPairingsProps) => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+  <div
+    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
+    data-cy="beer-pairings"
+  >
     {beerPairings.map((beer) => (
       <BeerPairing key={beer.id} beer={beer} searchString={searchString} />
     ))}
@@ -139,6 +144,8 @@ export const PairingFinder = () => {
     <div>
       <div>
         <input
+          data-cy="pairing-search-input"
+          type="text"
           ref={inputRef}
           className="mb-6 mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-cyan-600 focus:ring-cyan-600 block rounded-md sm:text-sm focus:ring-1"
           onChange={handleSearchStringChange}
@@ -147,9 +154,11 @@ export const PairingFinder = () => {
         />
 
         <div>
-          {viewDataState === ViewDataState.Loading ? <p>Loading</p> : null}
+          {viewDataState === ViewDataState.Loading ? (
+            <p data-cy="loading">Loading</p>
+          ) : null}
           {viewDataState === ViewDataState.Initial ? (
-            <p>What are you eating tonight?</p>
+            <p data-cy="initial">What are you eating tonight?</p>
           ) : null}
           {viewDataState === ViewDataState.Data ? (
             <BeerPairings

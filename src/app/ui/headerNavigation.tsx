@@ -14,8 +14,8 @@ const navLinks: NavLink[] = [
     href: "/",
   },
   {
-    name: "All Beer",
-    href: "/all-beer",
+    name: "All Beers",
+    href: "/all-beers",
   },
 ];
 

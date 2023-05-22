@@ -26,7 +26,7 @@ const getAllBeerData = cache(async () => {
     return beerData.flat().map((beer) => ({
       ...beer,
       // add slugs for readable urls
-      slug: slugify(beer.name, { lower: true }),
+      slug: slugify(beer.name, { lower: true, strict: true }),
     }));
   } catch (error) {
     console.error(error);
