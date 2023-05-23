@@ -4,13 +4,13 @@ import { BASE_API_URL } from "@/constants";
 import { BeerInformation, ViewDataState } from "@/types";
 import { truncate } from "lodash";
 import { useCallback, useEffect, useState } from "react";
-import slugify from "slugify";
 import { useDebounce } from "../hooks/useDebounce";
 import useFocus from "../hooks/useFocus";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { useViewDataState } from "../hooks/useViewDataState";
 import { fetchFoodsForBeer } from "../api/api";
+import { slugify } from "../utils/slugify";
 
 interface EmptyStateProps {
   searchString: string;
@@ -48,7 +48,7 @@ const BeerPairing = ({ beer, searchString }: BeerPairingProps) => {
       size="sm"
       title={beer.name}
       cta={{
-        href: `/beer/${slugify(beer.name, { lower: true, strict: true })}`,
+        href: `/beer/${slugify(beer.name)}`,
         label: "Check it out",
       }}
     >

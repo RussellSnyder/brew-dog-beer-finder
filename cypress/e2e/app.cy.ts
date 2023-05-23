@@ -1,4 +1,8 @@
-import { BEER_PAIRINGS_CONTAINER_SELECTOR, INPUT_SELECTOR } from "../selectors";
+import {
+  BEER_PAIRINGS_CONTAINER_SELECTOR,
+  BEER_PREVIEW,
+  INPUT_SELECTOR,
+} from "../selectors";
 
 describe("Navigation", () => {
   it("should navigate to 'All Beers' page", () => {
@@ -37,8 +41,8 @@ describe("Finding a beer to go with 'beef'", () => {
     cy.get(BEER_PAIRINGS_CONTAINER_SELECTOR).should("contain.text", "beef");
   });
 
-  describe("beer page visits from pairing finder", () => {
-    for (let n = 1; n < 10; n++) {
+  describe("beer detail page visits from pairing finder", () => {
+    for (let n = 1; n <= 5; n++) {
       it(`should navigate to a the n(${n}) beer when CTA is clicked`, () => {
         cy.get(`${BEER_PAIRINGS_CONTAINER_SELECTOR} > div:nth-of-type(${n}) h2`)
           .invoke("text")
@@ -51,6 +55,37 @@ describe("Finding a beer to go with 'beef'", () => {
               .invoke("text")
               .should((h1) => {
                 expect(h1).to.eq(beerName);
+              });
+          });
+      });
+    }
+  });
+});
+
+describe("All Beers page", () => {
+  beforeEach(() => {
+    cy.visit("http://localhost:3000/all-beers");
+  });
+
+  it("should display a lot of beers", () => {
+    cy.get(BEER_PREVIEW).should("have.length.greaterThan", 70);
+  });
+
+  describe("beer detail page visits from pairing finder", () => {
+    for (let n = 1; n <= 5; n++) {
+      it(`should navigate to a the n(${n}) beer when CTA is clicked`, () => {
+        cy.get(`${BEER_PREVIEW}:nth-of-type(${n}) h2`)
+          .invoke("text")
+          .then((beerName) => {
+            cy.get(`${BEER_PREVIEW}:nth-of-type(${n}) a`).click();
+
+            cy.get("h1")
+              .invoke("text")
+              .should((h1) => {
+                // we sometimes truncate the preview names
+                expect(h1).to.contain(
+                  beerName.substring(0, beerName.length - 4)
+                );
               });
           });
       });

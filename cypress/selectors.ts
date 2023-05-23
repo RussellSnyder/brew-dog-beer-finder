@@ -3,3 +3,4 @@ export const BEER_PAIRINGS_CONTAINER_SELECTOR = "[data-cy='beer-pairings']";
 export const EMPTY_STATE_SELECTOR = "[data-cy='empty-state']";
 export const LOADING_SELECTOR = "[data-cy='loading']";
 export const INITIAL_SELECTOR = "[data-cy='initial']";
+export const BEER_PREVIEW = "[data-cy='beer-preview']";

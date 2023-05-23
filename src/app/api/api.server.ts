@@ -1,8 +1,8 @@
 import { cache } from "react";
 import "server-only";
 
-import slugify from "slugify";
 import { fetchPageOfBeerData } from "./api";
+import { slugify } from "../utils/slugify";
 
 const preloadBeerData = () => {
   void fetchPageOfBeerData();
@@ -23,11 +23,7 @@ const getAllBeerData = cache(async () => {
 
     const beerData = await Promise.all([page1, page2, page3, page4]);
 
-    return beerData.flat().map((beer) => ({
-      ...beer,
-      // add slugs for readable urls
-      slug: slugify(beer.name, { lower: true, strict: true }),
-    }));
+    return beerData.flat();
   } catch (error) {
     console.error(error);
   }
@@ -36,7 +32,7 @@ const getAllBeerData = cache(async () => {
 const getBeerBySlug = async (givenSlug: string) => {
   const beerData = await getAllBeerData();
 
-  return beerData?.find(({ slug }) => slug === givenSlug);
+  return beerData?.find(({ name }) => slugify(name) === givenSlug);
 };
 
 const preloadData = () => {

@@ -3,17 +3,19 @@ import { Card } from "../ui/card";
 import Image from "next/image";
 import beerFallback from "../../assets/beer-fallback.jpeg";
 import { truncate } from "lodash";
+import { slugify } from "../utils/slugify";
 const IMAGE_SIZE = 75;
 
 export const BeerPreview = ({ beer }: { beer: BeerInformation }) => (
   <Card
+    testId="beer-preview"
     key={beer.id}
     title={truncate(beer.name, {
       length: 30,
       separator: " ",
     })}
     cta={{
-      href: `/beer/${beer.slug}`,
+      href: `/beer/${slugify(beer.name)}`,
       label: "More details",
     }}
   >

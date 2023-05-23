@@ -10,11 +10,12 @@ interface Props extends PropsWithChildren {
     href: string;
   };
   size?: "lg" | "sm";
+  testId?: string;
 }
 
-export const Card = ({ title, cta, children, size = "lg" }: Props) => {
+export const Card = ({ title, cta, children, size = "lg", testId }: Props) => {
   return (
-    <div className="border-2 p-4 flex flex-col" data-cy="card">
+    <div className="border-2 p-4 flex flex-col" data-cy={testId ?? "card"}>
       <div className={`flex-1 mb-4`}>
         <h2 className="text-lg font-bold mb-6 text-center h-2">
           {truncate(title)}

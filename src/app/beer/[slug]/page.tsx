@@ -36,7 +36,7 @@ export default async function BeerPage({ params: { slug } }: Props) {
   return (
     <main>
       <div className="flex justify-between">
-        <div className="md:flex-1 mr-12">
+        <div className="md:flex-1 md:mr-12">
           <div className="text-center md:text-left mb-4">
             <PageTitle>{beer.name}</PageTitle>
             <div className="md:hidden my-2">
